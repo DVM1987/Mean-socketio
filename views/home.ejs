@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="<%- params.domain %>">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        var socket = io("<%- params.domain %>"); 
+        
+        var socketReceiver = null;
+        // connect to server
+        socket.on("server-send-all-currentUser", function (data) {
+            console.log(data);
+            $("#mySoketId").html(socket.id);
+            $("#userList").html("");
+            data.arr.forEach(function(sock){
+                if (sock != socket.id) {
+                    $("#userList").append(`<li class="socketId">`+ sock +`</li>`); 
+                }               
+            });            
+
+        });
+
+       $(document).on("click", ".socketId", function(e){
+        socketReceiver = $(this).html();
+       
+       });
+
+        socket.on("send_to_client", function (data) {
+            console.log(data);
+            $("#chartList").append(`<li>`+ data.message +`</li>`);
+
+        })
+
+        $(document).ready(function () {
+            $("#send_to_server").click(function() {                
+            var msg = $("#message").val();    
+            socket.emit("client_send_to_server", {message : msg, receiver : socketReceiver});
+            });
+            
+        });
+        
+    </script>
+</head>
+<body>
+    <div id="mySoketId" style="color: red;"></div>
+    <input type="text" id="message" placeholder="...." />
+    <button id="send_to_server"> send to server</button>
+    <ul id="chartList"></ul>
+    <ul id="userList" style="background-color: red;"></ul>
+</body>
+</html>

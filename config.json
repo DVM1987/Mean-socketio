@@ -1,0 +1,8 @@
+{
+    "domain":"http://localhost:3000",
+    "mail" : {
+        "smtp_server":"",
+        "smtp_username":"",
+        "smtp_password":""
+    }
+}
